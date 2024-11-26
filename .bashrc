@@ -4,6 +4,20 @@ CanConnectToGitHub=$(ping -c 1 -W 1 github.com > /dev/null 2>&1 && echo "True" |
 # Initialize Zoxide
 eval "$(zoxide init bash)"
 
+# Initialize Oh My Posh for Bash
+if command -v oh-my-posh &> /dev/null; then
+  # Check if Oh My Posh is installed
+  export POSH_THEMES_PATH="$HOME/.poshthemes"  # Define the theme path
+  
+  # Set the desired theme (change to any theme you prefer)
+  export POSH_THEME="cobalt2"  # You can use other themes available in $POSH_THEMES_PATH
+  
+  # Initialize Oh My Posh
+  eval "$(oh-my-posh init bash --config $POSH_THEMES_PATH/$POSH_THEME.omp.json)"
+else
+  echo "Oh My Posh is not installed. Please install it from https://github.com/JanDeDobbeleer/oh-my-posh."
+fi
+
 # Function To Update Profile
 UpdateProfile() {
   if [ "$CanConnectToGitHub" != "True" ]; then
@@ -11,8 +25,8 @@ UpdateProfile() {
     return
   fi
 
-  # TODO: Add URL For Your Raw GitHub Profile Script
-  Url=""  # URL of the raw profile on GitHub
+
+  Url="https://raw.githubusercontent.com/PantiesIsStoopid/LinuxConfigs/refs/heads/master/.bashrc"  # URL of the raw profile on GitHub
   OldHash=$(sha256sum "$HOME/.bashrc" | awk '{print $1}')
   curl -sL "$Url" -o "/tmp/.bashrc.tmp"
   NewHash=$(sha256sum "/tmp/.bashrc.tmp" | awk '{print $1}')
